@@ -1,14 +1,9 @@
 from __future__ import print_function
-import pprint
 import sys
-import os
-import subprocess
-import json
 import spotipy
 import spotipy.util as util
 import pandas as pd
 from spotipy.oauth2 import SpotifyClientCredentials
-import time
 import re
 from config import client_id, client_secret, scope, redirect_uri
 
@@ -26,12 +21,12 @@ if len(sys.argv) > 2:
     mood = sys.argv[1]
     sp = spotipy.Spotify(auth=token)
 else:
+    print("arguments: mood (happy, sad), username")
     sys.exit()
 
 def get_playlist_audio_features(username, playlist_id, sp):
     offset = 0
     songs = []
-    items = []
     ids = []
     while True:
         content = sp.user_playlist_tracks(username, playlist_id, fields=None, limit=100, offset=offset, market=None)
@@ -81,4 +76,3 @@ for item in uri:
     mooddata = mooddata.append(get_playlist_audio_features("spotify", playlist_id, sp=spotipy.Spotify(auth=token)))
 
 mooddata.to_csv('{}.csv'.format(mood), index=False)
-print(mooddata)
